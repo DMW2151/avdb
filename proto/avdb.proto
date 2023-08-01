@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+option go_package = "avdb/proto/avdb.proto";
+package avdb;
+
+service AVDB {
+  rpc Fetch(FetchRequest) returns (FetchResponse) {}  
+  rpc Query(QueryRequest) returns (QueryResponse) {}  
+  rpc Insert(InsertRequest) returns (InsertResponse) {} 
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {} 
+}
+
+enum Metric {
+  NULL = 0;
+  L2 = 1;
+}
+
+message Record {
+  string uuid = 1;
+  double score = 2;
+  repeated double data = 3;
+  map<string, string> meta = 4;
+}
+
+message InsertRequest {
+  Record record = 1;
+}
+
+message InsertResponse {
+  bool success = 1;
+}
+
+message ReindexRequest {
+  Metric metric = 1;
+}
+
+message ReindexResponse {
+  bool success = 1;
+}
+
+message FetchRequest {
+  string uuid = 1;
+}
+
+message FetchResponse {
+  Record record = 1;
+}
+
+message DeleteRequest {
+  string uuid = 1;
+}
+
+message DeleteResponse {
+  string uuid = 1;
+  bool success = 2;
+}
+
+message QueryRequest {
+  int64 limit = 1;
+  Metric metric = 2;
+  int64  probes = 3; // should be like 1 - 32
+  repeated double data = 4;
+}
+
+message QueryResponse {
+  repeated Record records = 1;
+}
